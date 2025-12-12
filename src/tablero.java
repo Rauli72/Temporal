@@ -24,7 +24,7 @@ public class tablero {
     }
 
     public pieza obtenerPieza(int fila, int col) {
-        return casillas[fila][col].getpieza();
+        return casillas[fila][col].getPieza();
     }
 
     public casilla[][] getCasillas() {
