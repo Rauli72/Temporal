@@ -1,16 +1,16 @@
 public class tablero {
 
-    private Casilla[][] casillas;
+    private casilla[][] casillas;
 
     public tablero() {
-        this.casillas = new Casilla[8][8];
+        this.casillas = new casilla[8][8];
         inicializar();
     }
 
     private void inicializar() {
         for (int fila = 0; fila < 8; fila++) {
             for (int col = 0; col < 8; col++) {
-                casillas[fila][col] = new Casilla(fila, col);
+                casillas[fila][col] = new casilla(fila, col);
             }
         }
     }
@@ -19,15 +19,15 @@ public class tablero {
         inicializar();
     }
 
-    public void colocarPieza(Pieza pieza, int fila, int col) {
+    public void colocarPieza(pieza pieza, int fila, int col) {
         casillas[fila][col].setPieza(pieza);
     }
 
-    public Pieza obtenerPieza(int fila, int col) {
-        return casillas[fila][col].getPieza();
+    public pieza obtenerPieza(int fila, int col) {
+        return casillas[fila][col].getpieza();
     }
 
-    public Casilla[][] getCasillas() {
+    public casilla[][] getCasillas() {
         return casillas;
     }
 }
