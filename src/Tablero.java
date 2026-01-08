@@ -1,6 +1,8 @@
 public class Tablero {
 
-    public Casilla[][] Casillas;
+    private Casilla[][] Casillas;
+    private static String[] piBlancas;
+    private static String[] piNegras;
 
     // ANSI
     private static final String RESET = "\u001B[0m";
@@ -57,15 +59,15 @@ public class Tablero {
     // ===== DIBUJAR TABLERO =====
     public void dibujar() {
 
-        System.out.print("   ");
-        for (char c = 'A'; c <= 'H'; c++) {
+        System.out.print("    ");
+        for (char c = 'A'; c <= 'H'; c++) { //Letras arriba A-H
             System.out.print(" " + c + " ");
         }
         System.out.println();
 
         for (int fila = 0; fila < 8; fila++) {
 
-            System.out.print((8 - fila) + "  ");
+            System.out.printf("%2d  ", (8 - fila)); // Números lateral izq del 1-8
 
             for (int col = 0; col < 8; col++) {
 
@@ -74,58 +76,136 @@ public class Tablero {
                         ? FONDO_BLANCO + TEXTO_NEGRO
                         : FONDO_NEGRO + TEXTO_BLANCO;
 
+                String contenido;
                 if (c.getPieza() == null) {
-                    System.out.print(fondo + "   " + RESET);
+                    contenido = " ";
                 } else {
-                    System.out.print(fondo + " " + emojiPieza(c.getPieza()) + " " + RESET);
+                    contenido = letraPieza(c.getPieza());
                 }
+
+                System.out.print(fondo + " " + contenido + " " + RESET);
             }
 
-            System.out.print("  " + (8 - fila));
-            System.out.println();
+            System.out.printf(" %2d%n", (8 - fila)); // Números lateral der del 1-8
         }
 
-        System.out.print("   ");
-        for (char c = 'A'; c <= 'H'; c++) {
+        System.out.print("    ");
+        for (char c = 'A'; c <= 'H'; c++) { //Letras abajo A-H
             System.out.print(" " + c + " ");
         }
         System.out.println();
     }
 
-    // ===== EMOJIS =====
-    private String emojiPieza(Pieza p) {
+
+    // ===== PIEZAS =====
+    private String letraPieza(Pieza p) {
+
+        String t = p.getTipo();
 
         if (p.getColor().equals("B")) {
-            switch (p.getTipo()) {
-                case "P":
-                    return "♙";
-                case "T":
-                    return "♖";
-                case "C":
-                    return "♘";
-                case "A":
-                    return "♗";
-                case "D":
-                    return "♕";
-                case "R":
-                    return "♔";
-            }
+            return t;           // Blancas en mayúscula
         } else {
-            switch (p.getTipo()) {
-                case "P":
-                    return "♟";
-                case "T":
-                    return "♜";
-                case "C":
-                    return "♞";
-                case "A":
-                    return "♝";
-                case "D":
-                    return "♛";
-                case "R":
-                    return "♚";
+            return t.toLowerCase(); // Negras en minúscula
+        }
+    }
+
+
+    // ===== COMPROBACIÓN DE LA CONSTRUCCIÓN DEL TABLERO =====
+    public static boolean cargarLinea(Tablero tablero, String linea, String color) {
+
+        if (linea == null || linea.isEmpty()) {
+            return false;
+        }
+
+        String contenido = linea.trim();
+
+        String[] piezas = contenido.split(", ");
+
+        if (color.equals("B")){
+            piBlancas = piezas;
+        } else {
+            piNegras = piezas;
+        }
+
+        for (int i = 0; i < piezas.length; i++) {
+            String pieza = piezas[i];
+
+            if (pieza.contains(" ")) {
+                return false;
+            }
+
+            String tipo;
+            String pos;
+
+            if (pieza.length() == 2) {// Peón
+                tipo = "P";
+                pos = pieza;
+            } else if (pieza.length() == 3) {   // Otra pieza
+                tipo = String.valueOf(pieza.charAt(0));
+                pos = pieza.substring(1);
+            } else {
+                return false;
+            }
+
+            if (!esTipoValido(tipo)) return false;
+            if (!esCasillaValida(pos)) return false;
+
+            tablero.colocarPieza(tipo, color, pos.toUpperCase());
+        }
+
+        return true;
+    }
+
+
+    // ===== VALIDAR TIPO =====
+    private static boolean esTipoValido(String tipo){
+        if (tipo.equals("P") || tipo.equals("T") || tipo.equals("C") ||
+                tipo.equals("A") || tipo.equals("D") || tipo.equals("R")) {
+            return true;
+        }
+        return false;
+    }
+
+    // ===== VALIDAR POSICIÓN =====
+    private static boolean esCasillaValida(String casilla) {
+        if (casilla.length() != 2) return false;
+
+        char col = Character.toUpperCase(casilla.charAt(0));
+        char fila = casilla.charAt(1);
+
+        if (col >= 'A' && col <= 'H' && fila >= '1' && fila <= '8'){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    // ===== VALIDAR PIEZAS =====
+    public static boolean esPiezaValida() {
+
+        if (piBlancas == null || piNegras == null) {
+            return false;
+        }
+
+        for (String blanca : piBlancas) {
+            String posBlanca = extraerPosicion(blanca);
+
+            for (String negra : piNegras) {
+                String posNegra = extraerPosicion(negra);
+
+                if (posBlanca.equals(posNegra)) {
+                    return false; // Dos piezas en la misma casilla
+                }
             }
         }
-        return "?";
+        return true;
     }
+
+    private static String extraerPosicion(String pieza) {
+        if (pieza.length() == 2) {
+            return pieza.toUpperCase();
+        }
+        return pieza.substring(1).toUpperCase();
+    }
+
 }
