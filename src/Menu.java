@@ -50,7 +50,7 @@ public class Menu {
             System.out.println("Error en la entrada de las NEGRAS.");
             return;
 
-        } else if (!Tablero.esPiezaValida()) {
+        } else if (Tablero.esPiezaValida()) {
             System.out.println("Error: hay piezas en la misma casilla.");
             return;
         }

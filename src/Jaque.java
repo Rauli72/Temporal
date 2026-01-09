@@ -32,11 +32,11 @@ public class Jaque {
                 if (p != null && !p.getColor().equals(colorRey)) {
 
                     boolean contraria = switch (p.getTipo()) {
-                        case "T" -> MovimientoTorre.esValido(f, c, reyFila, reyCol);
-                        case "A" -> MovimientoAlfil.esValido(f, c, reyFila, reyCol);
-                        case "D" -> MovimientoReina.esValido(f, c, reyFila, reyCol);
-                        case "C" -> MovimientoCaballo.esValido(f, c, reyFila, reyCol);
-                        case "R" -> MovimientoRey.esValido(f, c, reyFila, reyCol);
+                        case "T" -> Movimiento.Torre(f, c, reyFila, reyCol);
+                        case "A" -> Movimiento.Alfil(f, c, reyFila, reyCol);
+                        case "D" -> Movimiento.Reina(f, c, reyFila, reyCol);
+                        case "C" -> Movimiento.Caballo(f, c, reyFila, reyCol);
+                        case "R" -> Movimiento.Rey(f, c, reyFila, reyCol);
                         case "P" -> esContrarioPeon(f, c, reyFila, reyCol, p.getColor());
                         default -> false;
                     };

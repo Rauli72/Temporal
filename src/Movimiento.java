@@ -1,12 +1,12 @@
 public class Movimiento {
-    public static boolean caballo(int filaInicio, int columnaInicio, int filaFin, int columnaFin) {
+    public static boolean Caballo(int filaInicio, int columnaInicio, int filaFin, int columnaFin) {
         int filaDiferencia = Math.abs(filaFin - filaInicio);
         int columnaDiferencia = Math.abs(columnaFin - columnaInicio);
         // Movimiento en L
         return (filaDiferencia == 2 && columnaDiferencia == 1) || (filaDiferencia == 1 && columnaDiferencia == 2);
     }
 
-    public static boolean peon(int filaInicio, int columnaInicio, int filaFin, int columnaFin) {
+    public static boolean Peon(int filaInicio, int columnaInicio, int filaFin, int columnaFin) {
         int filaDiferencia = Math.abs(filaFin - filaInicio);
         int columnaDiferencia = Math.abs(columnaFin - columnaInicio);
         return (filaFin <= 8 && columnaFin <= 8)
@@ -18,7 +18,7 @@ public class Movimiento {
                 && !(filaDiferencia == 0 && columnaDiferencia == 0);
     }
 
-    public static boolean reina(int filaInicio, int columnaInicio, int filaFin, int columnaFin) {
+    public static boolean Reina(int filaInicio, int columnaInicio, int filaFin, int columnaFin) {
         int filaDiferencia = Math.abs(filaFin - filaInicio);
         int columnaDiferencia = Math.abs(columnaFin - columnaInicio);
         // Torre + Alfil
@@ -28,7 +28,7 @@ public class Movimiento {
                 && (filaFin <= 8 && columnaFin <= 8);
     }
 
-    public static boolean rey(int filaInicio, int columnaInicio, int filaFin, int columnaFin) {
+    public static boolean Rey(int filaInicio, int columnaInicio, int filaFin, int columnaFin) {
         int filaDiferencia = Math.abs(filaFin - filaInicio);
         int columnaDiferencia = Math.abs(columnaFin - columnaInicio);
         return (filaFin <= 8 && columnaFin <= 8)
@@ -36,14 +36,14 @@ public class Movimiento {
                 && !(filaDiferencia == 0 && columnaDiferencia == 0);
     }
 
-    public static boolean torre(int filaInicio, int columnaInicio, int filaFin, int columnaFin) {
+    public static boolean Torre(int filaInicio, int columnaInicio, int filaFin, int columnaFin) {
         int filaDiferencia = Math.abs(filaFin - filaInicio);
         int columnaDiferencia = Math.abs(columnaFin - columnaInicio);
         // Movimiento en línea recta
         return filaDiferencia == 0 || columnaDiferencia == 0;
     }
 
-    public static boolean alfil(int filaInicio, int columnaInicio, int filaFin, int columnaFin) {
+    public static boolean Alfil(int filaInicio, int columnaInicio, int filaFin, int columnaFin) {
         int filaDiferencia = Math.abs(filaFin - filaInicio);
         int columnaDiferencia = Math.abs(columnaFin - columnaInicio);
 
