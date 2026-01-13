@@ -113,34 +113,30 @@ public class Tablero {
     // ===== COMPROBACIÓN DE LA CONSTRUCCIÓN DEL TABLERO =====
     public static boolean cargarLinea(Tablero tablero, String linea, String color) {
 
-        if (linea == null || linea.isEmpty()) {
-            return false;
-        }
+        if (linea == null || linea.isEmpty()) return false;
 
         String contenido = linea.trim();
+        if (contenido.isEmpty()) return false;
 
         String[] piezas = contenido.split(", ");
 
-        if (color.equals("B")){
+        if (color.equals("B")) {
             piBlancas = piezas;
         } else {
             piNegras = piezas;
         }
 
-        for (int i = 0; i < piezas.length; i++) {
-            String pieza = piezas[i];
+        for (String pieza : piezas) {
 
-            if (pieza.contains(" ")) {
-                return false;
-            }
+            if (pieza.contains(" ")) return false;
 
             String tipo;
             String pos;
 
-            if (pieza.length() == 2) {// Peón
+            if (pieza.length() == 2) {          // Peón
                 tipo = "P";
                 pos = pieza;
-            } else if (pieza.length() == 3) {   // Otra pieza
+            } else if (pieza.length() == 3) {   // R, T, A, C, D
                 tipo = String.valueOf(pieza.charAt(0));
                 pos = pieza.substring(1);
             } else {
@@ -208,4 +204,9 @@ public class Tablero {
         return pieza.substring(1).toUpperCase();
     }
 
+
+    // ===== GET CASILLA =====
+    public Casilla getCasilla(int fila, int col) {
+        return Casillas[fila][col];
+    }
 }

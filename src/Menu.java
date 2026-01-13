@@ -23,7 +23,7 @@ public class Menu {
         System.out.println("(Peón no lleva letra)\n");
 
         System.out.println("EJEMPLO FORMATO DE ENTRADA:");
-        System.out.println("Blancas: Rg1, Tf1, h2, g2, f2, d4, e4, Ce5, a4, b3, c2, Ab2, Ta1");
+        System.out.println("Blancas: Rg1, Tf1, h2, g2, f2, d4, e4, a4, b3, c2, Ab2, Ta1");
         System.out.println("Negras: Rc8, Td8, a7, b7, c7, Ae6, d5, e5, f7, g6, Ag7, h7, Th8\n");
 
         System.out.println("REGLAS IMPORTANTES:");
@@ -55,8 +55,28 @@ public class Menu {
             return;
         }
 
-        System.out.println("\nTablero cargado correctamente:\n");
-        tablero.dibujar();
+        boolean jaqueBlancas = Jaque.reyEnJaque(tablero, "B");
+        boolean jaqueNegras = Jaque.reyEnJaque(tablero, "N");
+
+        if (jaqueBlancas && jaqueNegras) {
+            System.out.println("Posición ilegal: ambos reyes están en jaque.");
+            return;
+        }
+
+        if (jaqueBlancas) {
+            System.out.println("Las BLANCAS están en jaque y deben mover obligatoriamente.");
+            tablero.dibujar();
+        }
+        else if (jaqueNegras) {
+            System.out.println("Las NEGRAS están en jaque y deben mover obligatoriamente.");
+            tablero.dibujar();
+        }
+        else {
+            System.out.println("Ningún rey está en jaque.");
+            System.out.println("El usuario decide qué bando mueve.");
+            tablero.dibujar();
+            System.out.println("\nEn cual bando quieres mover? [B/N]:");
+        }
     }
 }
 

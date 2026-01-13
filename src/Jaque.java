@@ -1,47 +1,55 @@
 public class Jaque {
 
-    public static boolean hayJaque(Casilla[][] casillas, String colorRey) {
+    public static boolean reyEnJaque(Tablero tablero, String colorRey) {
 
         int reyFila = -1;
         int reyCol = -1;
 
-        /* Localiza al esValido de color indicado
-        Recorre filas y columnas, busca la pieza R y la guarda en reyFila y reyCol
-         */
+        // 1. Buscar el rey
         for (int f = 0; f < 8; f++) {
             for (int c = 0; c < 8; c++) {
-                Pieza p = casillas[f][c].getPieza();
-                if (p != null &&
-                        p.getTipo().equals("R") &&
-                        p.getColor().equals(colorRey)) {
 
-                    reyFila = f;
-                    reyCol = c;
+                Casilla casilla = tablero.getCasilla(f, c);
+
+                if (casilla.getPieza() != null) {
+                    Pieza p = casilla.getPieza();
+
+                    if (p.getTipo().equals("R") && p.getColor().equals(colorRey)) {
+                        reyFila = f;
+                        reyCol = c;
+                    }
                 }
             }
         }
-        // esValido no encontrado
+
         if (reyFila == -1) return false;
 
-        // busca si alguna pieza contraria puede comerse al esValido
+        // 2. Determinar color enemigo
+        String enemigo;
+
+        if (colorRey.equals("B")) {
+            enemigo = "N";
+        } else if (colorRey.equals("N")) {
+            enemigo = "B";
+        } else {
+            return false;
+        }
+
+
+        // 3. Comprobar amenazas
         for (int f = 0; f < 8; f++) {
             for (int c = 0; c < 8; c++) {
-                Pieza p = casillas[f][c].getPieza();
 
-                //si es color contrario al esValido comprueba si seria posible la jugada
-                if (p != null && !p.getColor().equals(colorRey)) {
+                Casilla casilla = tablero.getCasilla(f, c);
 
-                    boolean contraria = switch (p.getTipo()) {
-                        case "T" -> MovimientoTorre.esValido(f, c, reyFila, reyCol);
-                        case "A" -> MovimientoAlfil.esValido(f, c, reyFila, reyCol);
-                        case "D" -> MovimientoReina.esValido(f, c, reyFila, reyCol);
-                        case "C" -> MovimientoCaballo.esValido(f, c, reyFila, reyCol);
-                        case "R" -> MovimientoRey.esValido(f, c, reyFila, reyCol);
-                        case "P" -> esContrarioPeon(f, c, reyFila, reyCol, p.getColor());
-                        default -> false;
-                    };
+                if (casilla.getPieza() != null) {
+                    Pieza p = casilla.getPieza();
 
-                    if (contraria) return true;
+                    if (p.getColor().equals(enemigo)) {
+                        if (amenaza(p, f, c, reyFila, reyCol, tablero)) {
+                            return true;
+                        }
+                    }
                 }
             }
         }
@@ -49,10 +57,42 @@ public class Jaque {
         return false;
     }
 
-    //caso esValido (ataque en diagonal)
-    private static boolean esContrarioPeon(int fi, int co, int fr, int cr, String color) {
-        //si es blanco ataca hacia arriba (-1) si no lo es, hacia abajo (+1)
-        int direccion = color.equals("B") ? -1 : 1;
-        return fr == fi + direccion && Math.abs(cr - co) == 1;
+
+    // ---- Comprobación de PeonAmenaza ----
+    private static boolean amenaza(Pieza p,
+                                   int fi, int ci,
+                                   int fr, int cr,
+                                   Tablero tablero) {
+
+        String tipo = p.getTipo();
+
+        if (tipo.equals("T")) {
+            return Movimiento.Torre(fi, ci, fr, cr)
+                    && Movimiento.caminoLibre(fi, ci, fr, cr, tablero);
+        }
+
+        if (tipo.equals("A")) {
+            return Movimiento.Alfil(fi, ci, fr, cr)
+                    && Movimiento.caminoLibre(fi, ci, fr, cr, tablero);
+        }
+
+        if (tipo.equals("D")) {
+            return Movimiento.Reina(fi, ci, fr, cr)
+                    && Movimiento.caminoLibre(fi, ci, fr, cr, tablero);
+        }
+
+        if (tipo.equals("C")) {
+            return Movimiento.Caballo(fi, ci, fr, cr);
+        }
+
+        if (tipo.equals("R")) {
+            return Movimiento.Rey(fi, ci, fr, cr);
+        }
+
+        if (tipo.equals("P")) {
+            return Movimiento.PeonAmenaza(fi, ci, fr, cr, p.getColor());
+        }
+
+        return false;
     }
 }
