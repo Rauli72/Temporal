@@ -204,4 +204,9 @@ public class Tablero {
         return pieza.substring(1).toUpperCase();
     }
 
+
+    // ===== GET CASILLA =====
+    public Casilla getCasilla(int fila, int col) {
+        return Casillas[fila][col];
+    }
 }

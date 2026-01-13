@@ -51,4 +51,45 @@ public class Movimiento {
                 && (Math.abs(filaInicio - filaFin) == Math.abs(columnaInicio - columnaFin))
                 && !(filaDiferencia == 0 && columnaDiferencia == 0);
     }
+
+    public static boolean PeonAmenaza(int fi, int ci, int fr, int cr, String color) {
+
+        if (color.equals("B")) {
+            if (fr == fi - 1 && (cr == ci - 1 || cr == ci + 1)) {
+                return true;
+            }
+        }
+
+        if (color.equals("N")) {
+            if (fr == fi + 1 && (cr == ci - 1 || cr == ci + 1)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    // ===== COLISIÓN =====
+    public static boolean caminoLibre(int fi, int ci,
+                               int fr, int cr,
+                               Tablero tablero) {
+
+        int pasoFila = Integer.compare(fr, fi);
+        int pasoCol = Integer.compare(cr, ci);
+
+        int f = fi + pasoFila;
+        int c = ci + pasoCol;
+
+        while (f != fr || c != cr) {
+
+            if (tablero.getCasilla(f, c).getPieza() != null) {
+                return false; // hay una pieza bloqueando
+            }
+
+            f += pasoFila;
+            c += pasoCol;
+        }
+
+        return true;
+    }
 }
