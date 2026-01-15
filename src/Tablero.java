@@ -205,6 +205,43 @@ public class Tablero {
     }
 
 
+    // ===== MOVIMIENTOS =====
+    public boolean ejecutarMovimiento(String origen, String destino) {
+
+        //toma cada letra introducida y la "traduce" a un numero
+        int colIni = columna(origen.charAt(0));
+        int filaIni = 8 - Character.getNumericValue(origen.charAt(1));
+        int colFin = columna(destino.charAt(0));
+        int filaFin = 8 - Character.getNumericValue(destino.charAt(1));
+
+
+        //valida que no se salga del array (0-7)
+        if (filaIni < 0 || filaIni > 7 || colIni < 0 || colIni > 7 ||
+                filaFin < 0 || filaFin > 7 || colFin < 0 || colFin > 7) {
+            System.out.println("Ccordenadas fuera de rango.");
+            return false;
+        }
+
+        //valida que hay algo que se pueda mover
+        Pieza p = Casillas[filaIni][colIni].getPieza();
+        if (p == null) {
+            System.out.println("No hay pieza en la casilla " + origen);
+            return false;
+        }
+
+        //valida si la casilla destino esta ocupada
+        if (Casillas[filaFin][colFin].getPieza() != null) {
+            System.out.println("Casilla destino ocupada.");
+            return false;
+        }
+
+        //ejecuta el movimiento
+        Casillas[filaFin][colFin].setPieza(p);
+        Casillas[filaIni][colIni].setPieza(null);
+        return true;
+    }
+
+
     // ===== GET CASILLA =====
     public Casilla getCasilla(int fila, int col) {
         return Casillas[fila][col];
