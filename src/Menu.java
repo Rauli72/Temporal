@@ -4,7 +4,7 @@ public class Menu {
     public static String colorJugador;
 
     public static void menuJuego(Scanner sc, Tablero tablero) {
-        System.out.println("========================================");
+        System.out.println("\n========================================");
         System.out.println("        CONFIGURACIÓN DEL TABLERO");
         System.out.println("========================================\n");
 
@@ -43,17 +43,22 @@ public class Menu {
             String negras = sc.nextLine();
 
             if (!Tablero.cargarLinea(tablero, blancas, "B")) {
-                System.out.println("Error en la entrada de las BLANCAS.");
+                System.out.println("Error en la entrada de las BLANCAS.\n");
                 continue;
             }
 
             if (!Tablero.cargarLinea(tablero, negras, "N")) {
-                System.out.println("Error en la entrada de las NEGRAS.");
+                System.out.println("Error en la entrada de las NEGRAS.\n");
                 continue;
             }
 
             if (!Tablero.esPiezaValida()) {
-                System.out.println("Error: hay piezas en la misma casilla.");
+                System.out.println("Error: hay piezas en la misma casilla.\n");
+                continue;
+            }
+
+            if (!Tablero.hayReyes()) {
+                System.out.println("Error: debe haber exactamente un rey blanco y uno negro.\n");
                 continue;
             }
 
