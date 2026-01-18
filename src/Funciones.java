@@ -1,6 +1,7 @@
 import java.util.Scanner;
 
 public class Funciones {
+    public static boolean movIlegal = false;
 
     // ===== MOVIMIENTOS DE LAS PIEZAS =====
     public static void movimientosJugador(Tablero tablero, String movimiento) {
@@ -11,14 +12,23 @@ public class Funciones {
         String destino = null;
         String tipo = "P"; // por defecto peón
 
-        // ===== PARSEO DEL MOVIMIENTO =====
-        if (movimiento.length() == 4) {
-            // e4e5, f2f3
+        // ===== MOVIMIENTO =====
+        // CASO PEÓN SIN ORIGEN: c4, e5
+        if (movimiento.length() == 2 &&
+                movimiento.charAt(0) >= 'a' && movimiento.charAt(0) <= 'h' &&
+                movimiento.charAt(1) >= '1' && movimiento.charAt(1) <= '8') {
+
+            tipo = "P";
+            destino = movimiento;
+        }
+        else if (movimiento.length() == 4) {
+            // f2f4
             origen = movimiento.substring(0, 2);
             destino = movimiento.substring(2, 4);
         }
         else {
             String obtenerTipo = String.valueOf(Character.toUpperCase(movimiento.charAt(0)));
+
             if (movimiento.length() == 3) {
                 // Te2
                 tipo = obtenerTipo;
@@ -52,6 +62,7 @@ public class Funciones {
 
             if (origenCasilla.getPieza() == null) {
                 System.out.println("Movimiento ilegal: no hay pieza en el origen.");
+                movIlegal = true;
                 return;
             }
 
@@ -59,12 +70,14 @@ public class Funciones {
 
             if (!p.getColor().equals(Menu.colorJugador)) {
                 System.out.println("Movimiento ilegal: pieza de color incorrecto.");
+                movIlegal = true;
                 return;
             }
 
-            // Malidación correcta del movimiento
+            // Validación correcta del movimiento
             if (!puedeMover(p, fila_ini, col_ini, fila_destino, col_destino, tablero)) {
                 System.out.println("Movimiento ilegal: la pieza no puede moverse así.");
+                movIlegal = true;
                 return;
             }
 
@@ -161,13 +174,17 @@ public class Funciones {
         }
 
         if (tipo.equals("P")) {
-            if (Movimiento.Peon(fila_ini, col_ini, fila_fin, col_fin)) {
+            // Movimiento normal vertical
+            if (Movimiento.PeonMovimiento(fila_ini, col_ini, fila_fin, col_fin, pieza.getColor(), tablero)) {
                 return true;
             }
-
-            // ataque diagonal
-            return Movimiento.PeonMovimiento(fila_ini, col_ini, fila_fin,
-                    col_fin, pieza.getColor(), tablero);
+            // Captura diagonal
+            if (Movimiento.PeonAmenaza(fila_ini, col_ini, fila_fin, col_fin, pieza.getColor())
+                    && tablero.getCasilla(fila_fin, col_fin).getPieza() != null
+                    && !tablero.getCasilla(fila_fin, col_fin).getPieza().getColor().equals(pieza.getColor())) {
+                return true;
+            }
+            return false;
         }
 
         return false;

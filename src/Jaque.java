@@ -85,10 +85,6 @@ public class Jaque {
             return Movimiento.Caballo(fila_ini, col_ini, fila_fin, col_fin);
         }
 
-        if (tipo.equals("R")) {
-            return Movimiento.Rey(fila_ini, col_ini, fila_fin, col_fin);
-        }
-
         if (tipo.equals("P")) {
             return Movimiento.PeonAmenaza(fila_ini, col_ini, fila_fin, col_fin, pieza.getColor());
         }

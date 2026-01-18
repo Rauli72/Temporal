@@ -55,19 +55,16 @@ public class Movimiento {
     public static boolean PeonMovimiento(int fi, int ci, int fr, int cr,
                                          String color, Tablero tablero) {
 
-        // No se mueve en diagonal
+        // No puede moverse en diagonal si no captura
         if (ci != cr) return false;
 
-        // BLANCAS (suben)
+        // BLANCAS (suben, fila disminuye en el array)
         if (color.equals("B")) {
-
             // 1 paso
-            if (fr == fi - 1 &&
-                    tablero.getCasilla(fr, cr).getPieza() == null) {
+            if (fr == fi - 1 && tablero.getCasilla(fr, cr).getPieza() == null) {
                 return true;
             }
-
-            // 2 pasos desde fila 2 (fila interna 6)
+            // 2 pasos desde fila 6 (fila interna 6 = fila 2 en tablero)
             if (fi == 6 && fr == 4 &&
                     tablero.getCasilla(5, cr).getPieza() == null &&
                     tablero.getCasilla(4, cr).getPieza() == null) {
@@ -75,14 +72,13 @@ public class Movimiento {
             }
         }
 
-        // NEGRAS (bajan)
+        // NEGRAS (bajan, fila aumenta en el array)
         if (color.equals("N")) {
-
-            if (fr == fi + 1 &&
-                    tablero.getCasilla(fr, cr).getPieza() == null) {
+            // 1 paso
+            if (fr == fi + 1 && tablero.getCasilla(fr, cr).getPieza() == null) {
                 return true;
             }
-
+            // 2 pasos desde fila 1 (fila interna 1 = fila 7 en tablero)
             if (fi == 1 && fr == 3 &&
                     tablero.getCasilla(2, cr).getPieza() == null &&
                     tablero.getCasilla(3, cr).getPieza() == null) {

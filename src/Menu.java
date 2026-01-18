@@ -2,9 +2,11 @@ import java.util.Scanner;
 
 public class Menu {
     public static String colorJugador;
+    private static int contadorMenu = 0;
+    private static boolean partidaActiva = true;
 
-    public static void menuJuego(Scanner sc, Tablero tablero) {
-        System.out.println("========================================");
+    private static void infoMenu() {
+        System.out.println("\n========================================");
         System.out.println("        CONFIGURACIÓN DEL TABLERO");
         System.out.println("========================================\n");
 
@@ -32,8 +34,16 @@ public class Menu {
         System.out.println("A TENER EN CUENTA:");
         System.out.println("- Letras en mayúsculas son BLANCAS");
         System.out.println("- Letras en minúsculas son NEGRAS\n");
+    }
+
+    public static void menuJuego(Scanner sc, Tablero tablero) {
+        if (Menu.contadorMenu == 0){
+            infoMenu();
+            contadorMenu++;
+        }
 
         boolean todoCorrecto = false;
+        tablero.resetTablero();
 
         while (!todoCorrecto) {
             System.out.print("Blancas: ");
@@ -43,17 +53,22 @@ public class Menu {
             String negras = sc.nextLine();
 
             if (!Tablero.cargarLinea(tablero, blancas, "B")) {
-                System.out.println("Error en la entrada de las BLANCAS.");
+                System.out.println("❌ Error en la entrada de las BLANCAS.\n");
                 continue;
             }
 
             if (!Tablero.cargarLinea(tablero, negras, "N")) {
-                System.out.println("Error en la entrada de las NEGRAS.");
+                System.out.println("❌ Error en la entrada de las NEGRAS.\n");
                 continue;
             }
 
             if (!Tablero.esPiezaValida()) {
-                System.out.println("Error: hay piezas en la misma casilla.");
+                System.out.println("❌ Error: hay piezas en la misma casilla.\n");
+                continue;
+            }
+
+            if (!Tablero.hayReyes()) {
+                System.out.println("❌ Error: debe haber exactamente un rey blanco y uno negro.\n");
                 continue;
             }
 
@@ -65,22 +80,22 @@ public class Menu {
         boolean jaqueNegras = Jaque.reyEnJaque(tablero, "N");
 
         if (jaqueBlancas && jaqueNegras) {
-            System.out.println("Posición ilegal: ambos reyes están en jaque.");
+            System.out.println("❌ Posición ilegal: ambos reyes están en jaque.");
             return;
         }
 
         if (jaqueBlancas) {
-            System.out.println("Las BLANCAS están en jaque y deben mover obligatoriamente.");
+            System.out.println("⚠️ Las ⬜ BLANCAS ⬜ están en jaque y deben mover obligatoriamente. ⚠️");
             tablero.dibujar();
             colorJugador = "B";
         }
         else if (jaqueNegras) {
-            System.out.println("Las NEGRAS están en jaque y deben mover obligatoriamente.");
+            System.out.println("⚠️ Las ⬛ NEGRAS ⬛ están en jaque y deben mover obligatoriamente. ⚠️");
             tablero.dibujar();
             colorJugador = "N";
         }
         else {
-            System.out.println("Ningún rey está en jaque.");
+            System.out.println("✔️ Ningún rey está en jaque.");
             System.out.println("El usuario decide qué bando mueve.");
             tablero.dibujar();
             System.out.println("\nEn cual bando quieres mover? [B/N]:");
@@ -102,11 +117,11 @@ public class Menu {
             System.out.println("1. Mostrar tablero");
             System.out.println("2. Mover pieza (ej: f2f3)");
             System.out.println("3. Reiniciar partida");
-            System.out.println("4. Salir");
+            System.out.println("4. Ver las instrucciones");
+            System.out.println("5. Salir");
             System.out.print("Opción: ");
 
             String opcion = sc.nextLine();
-            sc.nextLine();
 
             switch (opcion) {
 
@@ -119,6 +134,26 @@ public class Menu {
                     String movimiento = sc.nextLine();
 
                     Funciones.movimientosJugador(tablero, movimiento);
+
+                    if (Funciones.movIlegal) {
+                        System.out.println("La partida se ha acabado...");
+                        partidaActiva = false;
+                        return;
+                    }
+
+                    jaqueBlancas = Jaque.reyEnJaque(tablero, "B");
+                    jaqueNegras = Jaque.reyEnJaque(tablero, "N");
+
+                    // Mostrar si hay jaque después del movimiento
+                    if (jaqueBlancas) {
+                        System.out.println("⚠️ Las ⬜ BLANCAS ⬜ están en jaque ⚠️");
+
+                    } else if (jaqueNegras) {
+                        System.out.println("⚠️ Las ⬛ NEGRAS ⬛ están en jaque ⚠️");
+                    }
+
+                    System.out.println("Reiniciando partida...\n");
+                    menuActivo = false; // salir del menú
                     break;
 
                 case "3":
@@ -127,8 +162,12 @@ public class Menu {
                     break;
 
                 case "4":
+                    infoMenu();
+                    break;
+
+                case "5":
                     System.out.println("Saliendo del programa.");
-                    System.exit(0);
+                    partidaActiva = false;
                     break;
 
                 default:
@@ -138,12 +177,12 @@ public class Menu {
     }
 
     public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        Tablero tablero = new Tablero();
-        boolean partidaActiva = true;
+        while (partidaActiva) {
+            Tablero tablero = new Tablero(); // NUEVO TABLERO
+            Scanner sc = new Scanner(System.in);
 
-        while (partidaActiva){
             menuJuego(sc, tablero);
         }
+
     }
 }
