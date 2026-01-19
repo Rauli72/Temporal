@@ -148,6 +148,13 @@ public class Funciones {
                                       int fila_fin, int col_fin,
                                       Tablero tablero) {
 
+        // ❌ No capturar pieza aliada
+        Casilla destino = tablero.getCasilla(fila_fin, col_fin);
+        if (destino.getPieza() != null &&
+                destino.getPieza().getColor().equals(pieza.getColor())) {
+            return false;
+        }
+
         String tipo = pieza.getTipo();
 
         if (tipo.equals("T")) {
@@ -174,16 +181,21 @@ public class Funciones {
         }
 
         if (tipo.equals("P")) {
-            // Movimiento normal vertical
-            if (Movimiento.PeonMovimiento(fila_ini, col_ini, fila_fin, col_fin, pieza.getColor(), tablero)) {
+
+            // Movimiento normal
+            if (Movimiento.PeonMovimiento(fila_ini, col_ini, fila_fin, col_fin,
+                    pieza.getColor(), tablero)) {
                 return true;
             }
+
             // Captura diagonal
-            if (Movimiento.PeonAmenaza(fila_ini, col_ini, fila_fin, col_fin, pieza.getColor())
-                    && tablero.getCasilla(fila_fin, col_fin).getPieza() != null
-                    && !tablero.getCasilla(fila_fin, col_fin).getPieza().getColor().equals(pieza.getColor())) {
+            if (Movimiento.PeonAmenaza(fila_ini, col_ini, fila_fin, col_fin,
+                    pieza.getColor())
+                    && destino.getPieza() != null
+                    && !destino.getPieza().getColor().equals(pieza.getColor())) {
                 return true;
             }
+
             return false;
         }
 
