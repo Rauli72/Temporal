@@ -168,6 +168,7 @@ public class Menu {
                 case "5":
                     System.out.println("Saliendo del programa.");
                     partidaActiva = false;
+                    menuActivo = false;
                     break;
 
                 default:
